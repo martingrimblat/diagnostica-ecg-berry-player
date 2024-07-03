@@ -1,20 +1,20 @@
 import { useEffect, useRef } from "react";
-import { drawDerivations, drawFragment } from "..ecg/utils/ecg";
-import { EcgDisplayer } from "..ecg/utils/EcgDisplayer";
-import { mmScales } from "../constants";
+import { drawDerivations, drawFragment } from "../utils/ecg";
+import { EcgDisplayer } from "../utils/EcgDisplayer";
+import { mmScales } from "../utils/constants";
 import { useState } from "react";
-import { useRemoteRecorder } from "hooks/useRemoteRecorder";
+// import { useRemoteRecorder } from "hooks/useRemoteRecorder";
 
 
 
-export function useDrawDerivations(datasetRef, setLastIndex, displayersRef, positionrightLiveToReviewRef, data=false) {
+export function useDrawDerivations(datasetRef, displayersRef, positionrightLiveToReviewRef, gototheEnd, onData, setLastIndex) {
   
   const cancelRef = useRef();  
-  const [onData, setOnData] = useState(data)
+  // const [onData, setOnData] = useState(data)
   const timeoutRef = useRef();
   const animationIdRef = useRef();
   const [playOn, setPlayOn] = useState(false)
-  const {onCaptureMade, onCaptureEnd, onCaptureDiscard} = useRemoteRecorder(undefined, 'application/json', undefined, {})
+  // const {onCaptureMade, onCaptureEnd, onCaptureDiscard} = useRemoteRecorder(undefined, 'application/json', undefined, {})
 
 
     // desmonto
@@ -35,6 +35,7 @@ export function useDrawDerivations(datasetRef, setLastIndex, displayersRef, posi
     }, [])
 
   function play() {
+    gototheEnd()
     setPlayOn(true)
 }
 
@@ -78,7 +79,7 @@ useEffect(() => {
     })
 
     // setLoading(true)
-    await onCaptureMade({blob, duration})
+    // await onCaptureMade({blob, duration}) //TODO IMP! esto lo tengo que pasar al multi
     console.log(datasetRef.current)
     if (datasetRef.current?.ECG_WAVE) {
       datasetRef.current.ECG_WAVE = null  
@@ -111,6 +112,7 @@ useEffect(() => {
           await drawDerivations(data, timePeriod, displayersRef.current.mainDisplayer)
           lastIndex = await drawDerivations(data, timePeriod, displayersRef.current.miniatureDisplayer)
         }
+        // displayersRef.current.mainDisplayer.setLastIndex(lastIndex)
         setLastIndex(lastIndex)
         // console.log('dataset', data.length, 'drawed', ecgDisplayerRef.current.lastIndex)
         // console.log('dif', data.length - ecgDisplayerRef.current.lastIndex)
@@ -214,7 +216,6 @@ useEffect(() => {
     stop,
     initialize,
     finalize,
-    setOnData,
     drawViewportFragment,
     drawViewportMiniature,
     displayersRef

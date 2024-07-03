@@ -82,7 +82,6 @@ const Viewport = ({
   dx
 }) => {
 
-
   const offsetLeft = 0;
   const [left, setLeft] = useState(0);
   // const offsetLeft = 80;
@@ -101,7 +100,6 @@ const Viewport = ({
       offset_pointer = 0;
     }
   }, []);
-  // console.log('render VIEWPORT')
   useEffect(() => {
     //hace que el Viewport siga la grafica
     // console.log(`ECGNav Set left to follow last point drawed`);
@@ -782,10 +780,6 @@ const EcgNavigator = ({
   }
   
   const functionOnViewportChangeScroll = (left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin, extraLeft = 0, extraRight = 0) => {
-    console.log('left - canvasContentOffset + offset_pointer + offsetRefViewport.current + extraLeft')
-    console.log(left , canvasContentOffset , offset_pointer , offsetRefViewport.current , extraLeft)
-    console.log('right - canvasContentOffset + offset_pointer + offsetRefViewport.current + extraRight,')
-    console.log(right , canvasContentOffset , offset_pointer , offsetRefViewport.current , extraRight)
     typeof onViewportChangeScroll === "function" &&
     onViewportChangeScroll({
       left: left - canvasContentOffset + offset_pointer + offsetRefViewport.current + extraLeft,
