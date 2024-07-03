@@ -238,3 +238,4 @@ export function drawStartRect(ctx, startCoordinate) {
   ctx.lineTo(x + 50, y);
   ctx.stroke();
 }
+

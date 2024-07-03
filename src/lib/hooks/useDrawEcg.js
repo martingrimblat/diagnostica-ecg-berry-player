@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { drawDerivations, drawFragment } from "utils/ecg";
-import { EcgDisplayer } from "utils/EcgDisplayer";
+import { drawDerivations, drawFragment } from "..ecg/utils/ecg";
+import { EcgDisplayer } from "..ecg/utils/EcgDisplayer";
 import { mmScales } from "../constants";
 import { useState } from "react";
 import { useRemoteRecorder } from "hooks/useRemoteRecorder";

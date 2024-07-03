@@ -1,0 +1,1 @@
+export { default as ECGPanel } from "./components/ECGPanel";
