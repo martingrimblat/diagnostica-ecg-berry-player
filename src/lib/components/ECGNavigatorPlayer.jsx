@@ -79,11 +79,14 @@ const Viewport = ({
   intervalMoveRight,
   isPinReview,
   viewportRef,
-  dx
+  pos3,
+  dx,
+  setLeft,
+  left
 }) => {
 
   const offsetLeft = 0;
-  const [left, setLeft] = useState(0);
+  // const [left, setLeft] = useState(0);
   // const offsetLeft = 80;
   // const [left, setLeft] = useState(80);
   let right;
@@ -191,55 +194,38 @@ const Viewport = ({
     }
   }, []);
 
-  function handleMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-
-    // changeToReview();
-
-    clearInterval(intervalMoveLeft.current);
-    clearInterval(intervalMoveRight.current);
-
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
+ 
 
   function elementDrag(e) {
     e = e || window.event;
     e.preventDefault();
 
-    setInreview(true);
-    setStopmoveviewport(true);
     // offsetRefViewport.current = 0;
-
-    let marginRight = Math.floor(positionrightLiveToReviewRef.current);
-    
-    if(marginRight <= 990){
-      
-      offsetRefViewport.current = 0;
-      
-      auxiliarDrawScroll(0, marginRight);
-      
-    }else{
-      
-      offsetRefViewport.current = marginRight - 990;
-      
-      auxiliarDrawScroll(marginRight - 990, marginRight);
-      
-    }
+    clearInterval(intervalMoveLeft.current);
+    clearInterval(intervalMoveRight.current);
 
     drag(e.clientX);
   }
-
   function closeDragElement(ev) {
     document.onmouseup = null;
     document.onmousemove = null;
     clearInterval(intervalMoveLeft.current);
     clearInterval(intervalMoveRight.current);
   }
-
   
+  function handleMouseDown(e) {
+    e = e || window.event;
+    // e.preventDefault();
+
+    // get the mouse cursor position at startup:
+    pos3.current = e.clientX;
+    console.log(pos3.current)
+    viewportRef.current.style.cursor = "grabbing";
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
   const handleTouchStart = (e) => {
 
     // changeToReview();
@@ -490,7 +476,7 @@ const ViewportReview = ({
   );
 };
 
-const EcgNavigator = ({
+const EcgNavigatorPlayer = ({
   stage,
   setStage,
   pauseRecord,
@@ -505,6 +491,7 @@ const EcgNavigator = ({
   minWidth,
   setRight,
   setLeft,
+  left,
   minWidthReview,
   withoutdata,
   widthCanvasMiniature,
@@ -539,9 +526,13 @@ const EcgNavigator = ({
   dx,
   bgWidth
 }) => {
+  const intervalMoveRightPlayer = useRef(0)
+  const intervalMoveLeftPlayer = useRef(0)
   const { t } = useTranslation("global");
   const refCanvasWrapperMinViewer = useRef();
   const refCanvasMiniatureContainer= useRef();
+  let addMarginIfIsPin = 0
+  let widthOfEcgDiiMiniature = 500 //hardocdeado
   
   const [showgototheend, setShowgototheend] = useState(false);
 
@@ -558,13 +549,9 @@ const EcgNavigator = ({
 
   const drag = (clientX) => {
 
-
-    clearInterval(intervalMoveLeft.current);
-    clearInterval(intervalMoveRight.current);
-
-   
+    console.log('function drag')
     // calculate the new cursor position:
-    const elmnt = viewportRefReview.current; //la derivacion de abajo
+    const elmnt = viewportRef.current; //la derivacion de abajo
     pos1.current = pos3.current - clientX; //compara la posicion inicial con la nueva posicion donde movi el mouse
     pos3.current = clientX; //posicion de mi mouse
     
@@ -576,7 +563,7 @@ const EcgNavigator = ({
     const canvasContainer = elmnt.closest(".canvas-container"); //div que contiene toda los componentes del viewport
     const canvasContent = canvasContainer.querySelector(".canvas-content"); //selecionamos el canvas con la derivacion
     const canvasContentOffset = canvasContent.offsetLeft; //obtenemos donde comienza la derivacion
-    const parentWidth = elmnt.closest(".canvas-container").offsetWidth; //ancho de la derivacion y/o final de la derivacion
+    const parentWidth = elmnt.closest(".canvas-container").offsetWidth; //ancho de la derivacion y/o final de la derivacion //TODO revisar esto
     // const parentWidth2 = elmnt.closest("#canvas-wrapper-min-viewer").offsetWidth; //ancho de la derivacion y/o final de la derivacion
     
     conditionsToScroll(left, right, canvasContentOffset, parentWidth);
@@ -584,43 +571,107 @@ const EcgNavigator = ({
 
   const conditionsToScroll = (left, right, canvasContentOffset, parentWidth) => {
 
-    let addMarginIfIsPin = (isPinReview) ? 0 : 0;
-
     let navigate = false;
-    // set the element's new position
-    if (left >= canvasContentOffset && right < parentWidth) {
-      navigate = true;
-      
-      // onMoveViewportMoveScroll(widthCanvasMiniature, left);
-      
-      // le sumo el valor del margen derecho del navegador scroll
-      
-      if((right) <= positionrightLiveToReviewRef.current){
+      // set the element's new position
+      if (left >= canvasContentOffset && right < parentWidth) {
         //mientras el viewport no este al final o al principio de la derivacion actualiza la pos
-        setLeftreview(left);
-        functionOnViewportChange(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin);
-      }else{
-        if(isPinReview && inreview){
-          if(positionrightLiveToReviewRef.current > 580){
-            setLeftreview(positionrightLiveToReviewRef.current-580);
-            functionOnViewportChange(positionrightLiveToReviewRef.current-580, positionrightLiveToReviewRef.current, canvasContentOffset, offset_pointer, addMarginIfIsPin);
-          }
-          else{
-            setLeftreview(0);
-            functionOnViewportChange(0, positionrightLiveToReviewRef.current, canvasContentOffset, offset_pointer, addMarginIfIsPin);
-          }
+
+        setLeft(left);
+
+        typeof onViewportChange === "function" &&
+        onViewportChange({
+            left: left - canvasContentOffset + offset_pointer + offsetRefViewport.current,
+            right: right - canvasContentOffset + offset_pointer + offsetRefViewport.current,
+          });
         }
-        if(isPinReview && !inreview){
-          
-          // si muevo a la izquierda
-          if(pos1.current > 0){
-            setLeftreview(left);
-            functionOnViewportChange(left, positionrightLiveToReviewRef.current, canvasContentOffset, offset_pointer, addMarginIfIsPin);
+  
+      // scroll a la derecha
+      if (left >= canvasContentOffset && right >= parentWidth) {
+        //mientras el viewport no este al final o al principio de la derivacion actualiza la pos
+  
+  
+        offsetRefViewport.current = offsetRefViewport.current + 10;
+    
+
+        // si llego al final de la navegacion no muestra la flecha derecha, ni dibujo
+        if((right - canvasContentOffset + offset_pointer + offsetRefViewport.current + addMarginIfIsPin) <= 1700){
+          functionOnViewportChange(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin);
+          functionOnViewportChangeScroll(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin, - (widthOfEcgDiiMiniature - minWidth));
+          }else{
+            // quito lo que le sume al offset
+            offsetRefViewport.current = offsetRefViewport.current - 10;
           }
+    
+    
+          intervalMoveRightPlayer.current =  setInterval(() => {
+    
+            offsetRefViewport.current = offsetRefViewport.current + 10;
+      
+            // si llego al final de la navegacion no muestra la flecha derecha, ni dibujo
+            if((right - canvasContentOffset + offset_pointer + offsetRefViewport.current + addMarginIfIsPin) <= 1700){ //TODO hardocodeado sacado del lastMarginRightDB de ecg-react-player
+            functionOnViewportChange(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin);
+            functionOnViewportChangeScroll(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin, - (widthOfEcgDiiMiniature - minWidth));
+            }else{
+              // quito lo que le sume al offset
+            offsetRefViewport.current = offsetRefViewport.current - 10;
+          }
+          }, 150);
+        
+      }
+      
+      // scroll a la izquierda
+          
+      if (left < canvasContentOffset && right < parentWidth) {
+        
+        offsetRefViewport.current = offsetRefViewport.current - 10;
+  
+        if(offsetRefViewport.current <= 0){
+          offsetRefViewport.current = 0;
+        }
+        if((left - canvasContentOffset + offset_pointer + offsetRefViewport.current) >= 0){
+          functionOnViewportChange(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin);
+          functionOnViewportChangeScroll(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin, 0, widthOfEcgDiiMiniature - minWidth);
+          // mientras el rectangulo esté a la izquierda y onmousedown  el scroll va a seguir navegando
+          intervalMoveLeftPlayer.current =  setInterval(() => {
+              // actualizo el offset de navegacion
+              offsetRefViewport.current = offsetRefViewport.current - 10;
+  
+              if(offsetRefViewport.current <= 0){
+                offsetRefViewport.current = 0;
+              }
+              if((left - canvasContentOffset + offset_pointer + offsetRefViewport.current) >= 0){
+                functionOnViewportChange(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin);
+                functionOnViewportChangeScroll(left, right, canvasContentOffset, offset_pointer, addMarginIfIsPin, 0, widthOfEcgDiiMiniature - minWidth);
+              }else{
+                  typeof onViewportChange === "function" &&
+                  onViewportChange({
+                    left: 0,
+                    right: minWidth + addMarginIfIsPin,
+                  });
+            
+                  typeof onViewportChangeScroll === "function" &&
+                  onViewportChangeScroll({
+                    left: 0,
+                    right: widthCanvasMiniature,
+                  });
+                  clearInterval(intervalMoveLeftPlayer.current);
+              }
+          }, 150);
+        }else{
+  
+          typeof onViewportChange === "function" &&
+          onViewportChange({
+            left: 0,
+            right: minWidth + addMarginIfIsPin,
+          });
+    
+          typeof onViewportChangeScroll === "function" &&
+          onViewportChangeScroll({
+            left: 0,
+            right: widthCanvasMiniature,
+          });
         }
       }
-    }
-    
     
     // scroll a la derecha
     if (left >= canvasContentOffset && right >= parentWidth) {
@@ -816,7 +867,9 @@ const EcgNavigator = ({
       <ECGMiniature
         style={{
           marginTop: "12px",
-          border: "1px solid #F2F2F2"
+          border: "1px solid #F2F2F2",
+          position: 'relative',
+          left: '80px'
         }}
         canvasId={"dii-miniature"}
         backgroundGrid={false}
@@ -864,6 +917,9 @@ const EcgNavigator = ({
           sendIndexsNavigations={sendIndexsNavigations}
           viewportRef={viewportRef}
           dx={dx}
+          pos3={pos3}
+          setLeft={setLeft}
+          left={left}
         />
       </ECGMiniature> 
 
@@ -947,7 +1003,8 @@ const EcgNavigator = ({
 
 
     <div style={{
-      position: 'relative'
+      position: 'relative',
+      left: '-90px'
     }}>
       <Timer 
         stage={stage} 
@@ -1002,4 +1059,4 @@ const EcgNavigator = ({
     </>
   );
 };
-export default EcgNavigator;
+export default EcgNavigatorPlayer;

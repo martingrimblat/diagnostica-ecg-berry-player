@@ -54,6 +54,7 @@ const ECGMiniature = ({
   children,
   refCanvasWrapperMinViewer,
   refCanvasMiniatureContainer,
+  bgWidth=1045,
   ...props
 }) => {
   const canvasBgRef = useRef();
@@ -88,7 +89,7 @@ const ECGMiniature = ({
 
   return (
     <div style={{
-      width: '1045px',
+      width: `${bgWidth}px`,
       marginLeft: '0px',
       marginRight: '14px'
     }}>
