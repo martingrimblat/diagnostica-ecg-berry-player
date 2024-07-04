@@ -252,13 +252,11 @@ const Viewport = ({
               }
           }, 150);
         }else{
-  
           typeof onViewportChange === "function" &&
           onViewportChange({
             left: 0,
             right: minWidth + addMarginIfIsPin,
           });
-    
           typeof onViewportChangeScroll === "function" &&
           onViewportChangeScroll({
             left: 0,
@@ -425,61 +423,7 @@ const EcgNavigatorPlayer = ({
           />
         }
 
-      </div>
-
-
-    <div style={{
-      position: 'relative',
-      left: '-90px'
-    }}>
-      <Timer 
-        stage={stage} 
-        setStage={setStage} 
-        pauseRecord={pauseRecord} 
-        withoutdata={withoutdata}
-        timer={timer}
-        setTimer={setTimer}
-      />
-      <ButtonCircle 
-      onClick={gototheEnd}
-      stopmoveviewport={stopmoveviewport}
-      >
-        <span style={{
-          fontFamily: 'Rokkitt',
-          fontStyle: 'normal',
-          fontWeight: 700,
-          fontSize: '20px',
-          lineHeight: '131%',
-          textAlign: 'center',
-          letterSpacing: '0.03em',
-          color: (inreview) ? '#004FEC' : '#BFBFBF',
-          padding: '12px'
-        }}>
-          {'Ahora'}  
-        </span>
-      </ButtonCircle>
-
-      {inreview && stage === "FINISH" && (
-        <>
-          {indicatorsRef && 
-          indicatorsRef.current.start &&
-          indicatorsRef.current.end &&
-            <Eye>
-              <FontAwesomeIcon
-                style={{
-                  margin: "0px 5px",
-                  fontSize: "18px"
-                }}
-                icon={faEye}
-              />
-              {`${indicatorsRef.current.start} / ${indicatorsRef.current.end}`} 
-
-            </Eye>
-          }
-        </>
-      )}
-    </div>
-      
+      </div>   
     </>
   );
 };
