@@ -346,7 +346,7 @@ const EcgNavigatorPlayer = ({
           marginTop: "12px",
           border: "1px solid #F2F2F2",
           position: 'relative',
-          left: '80px'
+          left: '37px'
         }}
         canvasId={"dii-miniature"}
         backgroundGrid={false}

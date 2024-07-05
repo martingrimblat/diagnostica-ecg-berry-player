@@ -64,7 +64,6 @@ useEffect(() => {
   }
 
   async function finalize() {
-    const data = {};
     let i = 0;
     let duration = positionrightLiveToReviewRef.current
     
@@ -73,20 +72,13 @@ useEffect(() => {
       datasetRef.current.ECG_WAVE.splice(lastIndex)
     }
 
-    const finalDataset = datasetRef.current.ECG_WAVE
-    var blob = new Blob([JSON.stringify(finalDataset)], {
-      type: 'applicaton/json',
-    })
-
-    // setLoading(true)
-    // await onCaptureMade({blob, duration}) //TODO IMP! esto lo tengo que pasar al multi
-    console.log(datasetRef.current)
+    const data = datasetRef.current.ECG_WAVE
+ 
     if (datasetRef.current?.ECG_WAVE) {
       datasetRef.current.ECG_WAVE = null  
     }
     datasetRef.current = null  
-    console.log(datasetRef.current)
-    // cleanContext();
+    
     return data;
   }
 

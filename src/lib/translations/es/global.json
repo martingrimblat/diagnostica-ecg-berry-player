@@ -1,0 +1,27 @@
+{
+  "addCommentDialog": {
+    "title": "Nuevo comentario",
+    "option1": "Cancelar",
+    "option2": "Comentar",
+    "placeholder": "Escribe un comentario de lo que observas"
+  },
+  "finishEcgDialog": {
+    "title": "Registro completado",
+    "message": "Ahora puedes enfocarte en un momento en particular y agregar comentarios sobre lo que observas. Moviendo el seleccionador gris hacia ambas direcciones, podrás selecccionar los segundos del estudio que quieras comentar.",
+    "check": "No volver a mostrar"
+  },
+  "finishsecondEcgDialog": {
+    "title": "Ver comentarios realizados",
+    "message": "Para ver los comentarios realizados durante el estudio deberás hacer click en el ícono.",
+    "check": "No volver a mostrar",
+    "option1": "Continuar"
+  },
+  "listComments": {
+    "title": "Listado de comentarios",
+    "focus": "Focalizar ECG",
+    "no_comments": "Aún no hay comentarios"
+  },
+  "principal": {
+    "option1": "Añadir comentarios"
+  }
+}
