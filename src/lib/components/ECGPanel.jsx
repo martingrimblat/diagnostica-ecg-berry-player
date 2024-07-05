@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import {ECGWave} from './ECGWave'
 import EcgNavigator from './ECGNavigator'
 import { useDrawDerivations } from '../hooks/useDrawEcg'
+import AddCommentDialog from '../dialogs/AddCommentDialog'
+import { getSecondsFromPixels } from '../utils/date'
 
 export const WrapperGrid = styled.div`
   display: grid;
@@ -31,6 +33,8 @@ const ECGPanel = ({
   minWidth=587, //TODO arreglar esto, tiene que ser el ancho del viewport
   setRight,
   setLeft,
+  left,
+  right,
   minWidthReview,
   withoutdata,
   widthCanvasMiniature=0, // TODO borrar esto, no se usa en ningun lado
@@ -67,12 +71,20 @@ const ECGPanel = ({
   withoutDataDivRef,
   datasetRefViewer,
   helpersRef,
-  onData
+  onData,
+  viewlistcomments,
+  showModalComments,
+  setShowModalComments,
+  dragIndicators,
+  comments,
+  setComments,
+  setDragIndicators
   }
 ) => {
 
   const intervalReviewRef = useRef()
   const [lastIndex, setLastIndex] = useState(0)
+  const [selectedmargins, setSelectedmargins] = useState({left:null,right:null});
 
   const gototheEnd = () => {
     setStopmoveviewport(false);
@@ -115,6 +127,14 @@ const ECGPanel = ({
     };
     console.log(`Helpers initialized`);
   }, []);
+
+  useEffect(() => {
+    const {left, right} = selectedmargins;
+    console.log('selected margins',left,right)
+    if(left >= 0 && right > 0){
+      auxiliarDraw(left, right);
+    }
+  }, [selectedmargins]);
 
   useEffect(() => {
     if (inreview && stage === 'RECORDING') {
@@ -265,9 +285,9 @@ const ECGPanel = ({
 
     // if (inreview) 
     setInreview(true)
-      setLeft(0)
+    // setLeft(0)
     // } else {
-    //   document.querySelector('.drag-indicator-viewer').style.left = '0px';
+    document.querySelector('.drag-indicator-viewer-review').style.left = '0px';
     // }
     // mover el rectangulo al comienzo
 
@@ -356,6 +376,24 @@ const ECGPanel = ({
             </ECGWrapper>
           </BoxGrid>
       </WrapperGrid>
+      <AddCommentDialog
+        viewlistcomments={viewlistcomments}
+        open={showModalComments}
+        handleClose={() => {
+          setShowModalComments(false);
+          // setSelectedPin(null);
+        }}
+        dragIndicators={dragIndicators}
+        comments={comments}
+        setComments={setComments}
+        handleFocusMarginsEcg={handleFocusMarginsEcg} // TODO pasar esto al package 
+        left={left}
+        right={right}
+        isPinReview={true}
+        positionrightLiveToReviewRef={positionrightLiveToReviewRef}
+        inreview={inreview}
+        leftreview={leftreview}
+      />
     </>
 
   )
