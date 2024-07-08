@@ -23,5 +23,30 @@
   },
   "principal": {
     "option1": "Añadir comentarios"
+  },
+  "stillhere": {
+    "title": "¿Sigues ahí?",
+    "body": "Indica si necesitas más tiempo para el examen. De lo contrario, se detendrá automáticamente la grabación en unos segundos.",
+    "dontask": "No volver a preguntar por",
+    "finish": "Pausar",
+    "keep_recording": "Seguir grabando",
+    "now": "Ahora"
+  },
+  "filters": {
+    "title": "Filtros",
+    "m": "M - Músculo",
+    "v": "V - Línea base",
+    "apply": "Aplicar"
+  },
+  "commentsSection": {
+    "not_comments": "Aún no hay comentarios",
+    "comments": "Nuevo comentario"
+  },
+  "ecg": {
+    "error": "Ha ocurrido un error.\n Vuelve a intentarlo",
+    "list": "Listado de comentarios",
+    "warn": "Uno de los dispositivos configurados no está conectado",
+    "focus": "Focalizar ECG",
+    "error_message": "Ha ocurrido un error\n al realizar el examen"
   }
 }

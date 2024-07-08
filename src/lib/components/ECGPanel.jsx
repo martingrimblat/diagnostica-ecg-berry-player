@@ -6,6 +6,34 @@ import { useDrawDerivations } from '../hooks/useDrawEcg'
 import AddCommentDialog from '../dialogs/AddCommentDialog'
 import { getSecondsFromPixels } from '../utils/date'
 
+import global_es from "../translations/es/global.json";
+import global_pt from "../translations/pt/global.json";
+
+import i18next from "i18next";
+import { I18nextProvider } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+
+i18next.use(LanguageDetector).init({
+  detection: {
+    // order and from where user language should be detected
+    order: ["querystring", "localStorage", "sessionStorage", "navigator"],
+    // keys or params to lookup language from
+    lookupQuerystring: "lng",
+    lookupLocalStorage: "language",
+    lookupSessionStorage: "",
+  },
+  interpolation: { escapeValue: false },
+  fallbackLng: "es",
+  resources: {
+    es: {
+      global: global_es,
+    },
+    pt: {
+      global: global_pt,
+    },
+  },
+});
+
 export const WrapperGrid = styled.div`
   display: grid;
   background-color: #fff;
@@ -304,7 +332,7 @@ const ECGPanel = ({
   };
 
   return (
-    <>
+    <I18nextProvider i18n={i18next}>
       <WrapperGrid ref={withoutDataDivRef} style={{ position: 'relative', left:'-100px' ,zIndex: 1}}>
         <BoxGrid >
           <ECGWave />
@@ -394,8 +422,7 @@ const ECGPanel = ({
         inreview={inreview}
         leftreview={leftreview}
       />
-    </>
-
+    </I18nextProvider>
   )
 }
 export default ECGPanel;

@@ -156,6 +156,7 @@ const ECGPanelPlayer = ({
   fullNameUser= 'Doctor1',
   addComment,
   lastMarginRightDB = 1706,
+  commentsDB,
   }
 ) => {
 
@@ -205,6 +206,10 @@ const ECGPanelPlayer = ({
     };
     console.log(`Helpers initialized`);
   }, []);
+
+  useEffect(() => {
+    getComments();
+  }, [minWidthViewport])
   
   useEffect(() => {
     if (inreview && stage === 'RECORDING') {
@@ -230,7 +235,6 @@ const ECGPanelPlayer = ({
       clearInterval(intervalReviewRef.current);
     }
   }, [inreview])
-  
   
   const auxiliarDraw = (left, right) => {
     if(right == positionrightLiveToReviewRef.current){
@@ -295,6 +299,46 @@ const ECGPanelPlayer = ({
     
     auxiliarDraw(left, right);
   }
+
+  const getComments = async() => {
+    try {
+      const commentsResp = commentsDB;
+      if(commentsResp && commentsResp.length && commentsResp.length > 0){
+        //agrego los segundos a los comentarios
+        const commentsRespExtend = commentsResp.map(
+          (comment)=> {
+            let leftPixels, rightPixels;
+            let left = parseInt(comment.from);
+            let right = parseInt(comment.to);
+          if(comment.source !== 'ecgplayer'){
+            //convierto los px del viewer al player
+            const {leftPixelsPlayer, rightPixelsPlayer} = getPixelsFromViewerToPlayer(left, right,204.4,minWidthViewport);
+            leftPixels = leftPixelsPlayer;
+            rightPixels = rightPixelsPlayer;
+          }else{
+            leftPixels = left;
+            rightPixels = leftPixels + minWidthViewport;
+          }
+          //obtengo los segundos desde los px del player
+          const {leftSeconds, rightSeconds} = getSecondsFromPixels(leftPixels, rightPixels, minWidthViewport, 5.6);
+
+          return { ...comment, 
+            from: leftPixels, 
+            to: rightPixels, 
+            fromSeconds: leftSeconds, 
+            toSeconds: rightSeconds
+          }
+          }
+        )
+
+
+        setComments(commentsRespExtend);
+      }
+    } catch (error) {
+      console.log('error_db', JSON.stringify(error));
+    }
+
+}
 
   const {   
     dragIndicators,
