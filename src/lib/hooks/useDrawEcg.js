@@ -67,7 +67,7 @@ useEffect(() => {
     let i = 0;
     let duration = positionrightLiveToReviewRef.current
     
-    if(displayersRef.current.mainDisplayer) {
+    if(displayersRef?.current?.mainDisplayer) {
       let lastIndex = displayersRef.current.mainDisplayer.lastIndex
       datasetRef.current.ECG_WAVE.splice(lastIndex)
     }
