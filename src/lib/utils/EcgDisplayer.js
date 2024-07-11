@@ -1,4 +1,4 @@
-import { msToPixels } from "utils/ecg";
+import { msToPixels } from "./ecg";
 
 export class EcgDisplayer {
     constructor(ctx, sampleRate=250, scale, factorScale=1, color="#B163FF") {
