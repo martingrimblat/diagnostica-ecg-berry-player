@@ -208,6 +208,7 @@ const ECGPanelPlayer = ({
   }, []);
 
   useEffect(() => {
+    console.log('get comments use effect')
     getComments();
   }, [minWidthViewport])
   
@@ -331,7 +332,7 @@ const ECGPanelPlayer = ({
           }
         )
 
-
+        console.log('set comments', commentsRespExtend)
         setComments(commentsRespExtend);
       }
     } catch (error) {
