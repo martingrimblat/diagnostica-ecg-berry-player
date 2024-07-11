@@ -1,9 +1,17 @@
 {
   "addCommentDialog": {
     "title": "Nuevo comentario",
+    "message": "Ya no podrás solicitar nuevos exámes para el paciente en curso. Volverás al listado de pacientes en sala de espera.",
     "option1": "Cancelar",
     "option2": "Comentar",
-    "placeholder": "Escribe un comentario de lo que observas"
+    "indication": "Compartir mediante:",
+    "mail": "E-mail",
+    "whatsaap": "Whatsapp",
+    "observation": "Observaciones",
+    "placeholder": "Escribe un comentario de lo que observas",
+    "cancel": "Cancelar",
+    "comment": "Comentar",
+    "no_comments": "Aún no hay comentarios"
   },
   "finishEcgDialog": {
     "title": "Registro completado",
