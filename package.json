@@ -1,6 +1,6 @@
 {
-  "name": "ecg-berry-player",
-  "version": "0.1.7",
+  "name": "@integraciones_doc24/ecg-berry-player",
+  "version": "0.1.8",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",
